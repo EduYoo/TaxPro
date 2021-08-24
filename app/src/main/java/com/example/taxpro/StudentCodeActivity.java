@@ -23,7 +23,7 @@ public class StudentCodeActivity extends AppCompatActivity
 
         getIntent();
 
-        context = getApplicationContext();
+        context=this;
 
         studentCode_EditText=findViewById(R.id.StudentCodeActivity_edit_StudentCode);
         btn=findViewById(R.id.StudentCodeActivity_btn);

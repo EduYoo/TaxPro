@@ -24,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity
 
         getIntent();
 
-        context=getApplicationContext();
+        context=this;
 
         email_EditText=findViewById(R.id.SignUpActivity_edit_Email);
         password_EditText=findViewById(R.id.SignUpActivity_edit_Password);
@@ -35,7 +35,7 @@ public class SignUpActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                
+                FireStoreAPI.Auth.signUp(context,email_EditText.getText().toString(),password_EditText.getText().toString());
             }
         });
     }

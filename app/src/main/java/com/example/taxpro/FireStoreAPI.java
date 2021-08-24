@@ -59,19 +59,22 @@ public class FireStoreAPI
                                                         DocumentSnapshot document_studentCode = task.getResult();
                                                         if (document_studentCode.exists())
                                                         {
-                                                            if(context.equals(LoginActivity.class))
+                                                            Log.d("???", context.toString());
+                                                            student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                            if(context instanceof LoginActivity)
                                                             {
-                                                                student.setStudentCode(document_studentCode.get("StudentCode").toString());
+
                                                                 student.setRegion(document_studentCode.get("Region").toString());
                                                                 student.setSchool(document_studentCode.get("School").toString());
                                                                 student.setGrade(document_studentCode.get("Grade").toString());
-
+                                                                student.setName(document_studentCode.get("Name").toString());
                                                                 checkEmail(context, classCode, studentCode, password);
                                                             }
-                                                            else if(context.equals(StudentCodeActivity.class))
+                                                            else if(context instanceof StudentCodeActivity)
                                                             {
                                                                 context.startActivity(new Intent(context,SignUpActivity.class));
                                                             }
+
 
                                                         }
                                                         else
@@ -147,6 +150,53 @@ public class FireStoreAPI
                             }
                         }
                     });
+        }
+
+        public static void signUp(Context context, String email, String password)
+        {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                Toast.makeText(context, "회원가입 성공!", Toast.LENGTH_SHORT).show();
+                                registerEmail(email);
+
+                                FirebaseUser user = mAuth.getCurrentUser();
+
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>()
+                                        {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task)
+                                            {
+                                                Log.d("TAG", "Email:sent");
+                                            }
+                                        });
+
+                                context.startActivity(new Intent(context,LoginActivity.class));
+
+                            } else
+                                {
+
+                                    Toast.makeText(context, "회원가입 실패!", Toast.LENGTH_SHORT).show();
+
+
+                            }
+                        }
+                    });
+
+        }
+
+        private static void registerEmail(String email)
+        {
+            FireStoreAPI.db.collection("IntegratedManagement/"+student.getClassCode()+"/StudentList")
+                    .document(student.getStudentCode())
+                    .update("Email",email);
+
         }
 
     }
