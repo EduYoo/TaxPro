@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_loading.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_login.xml" value="0.2390625" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_main_screen.xml" value="0.2390625" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_student_code.xml" value="0.25364583333333335" />
       </map>
     </option>
   </component>

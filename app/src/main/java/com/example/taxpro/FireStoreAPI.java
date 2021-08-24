@@ -59,11 +59,20 @@ public class FireStoreAPI
                                                         DocumentSnapshot document_studentCode = task.getResult();
                                                         if (document_studentCode.exists())
                                                         {
-                                                            student.setStudentCode(document_studentCode.get("StudentCode").toString());
-                                                            student.setRegion(document_studentCode.get("Region").toString());
-                                                            student.setSchool(document_studentCode.get("School").toString());
-                                                            student.setGrade(document_studentCode.get("Grade").toString());
-                                                            checkEmail()
+                                                            if(context.equals(LoginActivity.class))
+                                                            {
+                                                                student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                                student.setRegion(document_studentCode.get("Region").toString());
+                                                                student.setSchool(document_studentCode.get("School").toString());
+                                                                student.setGrade(document_studentCode.get("Grade").toString());
+
+                                                                checkEmail(context, classCode, studentCode, password);
+                                                            }
+                                                            else if(context.equals(StudentCodeActivity.class))
+                                                            {
+                                                                context.startActivity(new Intent(context,SignUpActivity.class));
+                                                            }
+
                                                         }
                                                         else
                                                         {
@@ -82,7 +91,7 @@ public class FireStoreAPI
 
         }
 
-        private static void checkEmail(Context context, String classCode,String studentCode, String password)
+        private static void checkEmail(Context context, String classCode, String studentCode, String password)
         {
             FireStoreAPI.db.collection("IntegratedManagement/"+classCode+"/StudentList")
                     .document(studentCode)
@@ -94,7 +103,7 @@ public class FireStoreAPI
                         {
                             if (task.getResult().get("Email") != "")
                             {
-                                signIn()
+                                signIn(context,task.getResult().get("Email").toString(),password);
                             }
                             else
                             {

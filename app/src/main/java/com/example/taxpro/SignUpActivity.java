@@ -8,32 +8,34 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class StudentCodeActivity extends AppCompatActivity
+public class SignUpActivity extends AppCompatActivity
 {
     private Context context;
 
-    EditText studentCode_EditText;
-    Button btn;
+    private EditText email_EditText;
+    private EditText password_EditText;
+    private Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_code);
+        setContentView(R.layout.activity_sign_up);
 
         getIntent();
 
-        context = getApplicationContext();
+        context=getApplicationContext();
 
-        studentCode_EditText=findViewById(R.id.StudentCodeActivity_edit_StudentCode);
-        btn=findViewById(R.id.StudentCodeActivity_btn);
+        email_EditText=findViewById(R.id.SignUpActivity_edit_Email);
+        password_EditText=findViewById(R.id.SignUpActivity_edit_Password);
+        btn=findViewById(R.id.SignUpActivity_btn);
 
         btn.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                FireStoreAPI.Auth.checkStudentCode(context,studentCode_EditText.getText().toString(),null);
+                
             }
         });
     }

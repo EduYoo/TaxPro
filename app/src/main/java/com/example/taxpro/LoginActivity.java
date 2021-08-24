@@ -15,8 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class LoginActivity extends AppCompatActivity
 {
     private Context context;
-    private FirebaseAuth mAuth;
-
 
     private Student student;
 
@@ -34,9 +32,9 @@ public class LoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        context=getApplicationContext();
+        getIntent();
 
-        mAuth=FirebaseAuth.getInstance();
+        context=getApplicationContext();
 
         student=Student.getInstance();
         student.initializeInfo();
