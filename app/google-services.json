@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "971094147079",
+    "project_id": "taxpro-dc3f6",
+    "storage_bucket": "taxpro-dc3f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971094147079:android:40488895a511cac1682aa2",
+        "android_client_info": {
+          "package_name": "com.example.taxpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971094147079-eh81skvhs4fvv5oadd8pljefelmnds2p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpeus6fwPDCLQ6xNyzB4lt2-MC47z9EaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971094147079-eh81skvhs4fvv5oadd8pljefelmnds2p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
