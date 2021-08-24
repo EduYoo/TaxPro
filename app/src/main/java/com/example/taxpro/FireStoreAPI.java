@@ -27,8 +27,6 @@ public class FireStoreAPI
     private static ClassInfo classInfo=ClassInfo.getInstance();
     private static Student student=Student.getInstance();
 
-    private List<String> list;
-
 
     public static class Auth
     {
@@ -201,55 +199,60 @@ public class FireStoreAPI
 
     }
 
-    void getListOfSavingProduct()
+    public static class Bank
     {
-        db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/")
-                .document("Banking")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
-                    {
-                        if (task.isSuccessful())
-                        {
-                            list=(ArrayList<String>)task.getResult().get("ListOfSavingProduct");
+        private static List<String> list;
 
-                            for (String item:list)
+        public static void getListOfSavingProduct()
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/")
+                    .document("Banking")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.isSuccessful())
                             {
-                                classInfo.getListOfSavingProduct().add(item);
+                                list=(ArrayList<String>)task.getResult().get("ListOfSavingProduct");
+
+                                for (String item:list)
+                                {
+                                    classInfo.getListOfSavingProduct().add(item);
+                                }
+                            }
+                            else
+                            {
+
                             }
                         }
-                        else
-                        {
+                    });
+        }
 
-                        }
-                    }
-                });
-    }
-
-    void getSavingProduct(FireStoreGetCallback<Double> callback, String saving)
-    {
-        db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/")
-                .document("saving")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+        public static void getSavingProduct(FireStoreGetCallback<Double> callback, String saving)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/")
+                    .document("saving")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                     {
-                        if (task.isSuccessful())
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
                         {
-                            callback.callback(Double.valueOf(task.getResult().get("Rate").toString()));
+                            if (task.isSuccessful())
+                            {
+                                callback.callback(Double.valueOf(task.getResult().get("Rate").toString()));
+                            }
+                            else
+                            {
+
+                            }
                         }
-                        else
-                        {
-
-                        }
-                    }
-                });
+                    });
 
 
+        }
     }
 
 }
