@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaxPro">
         <activity
+            android:name=".MainScreenActivity"
+            android:exported="true" />
+        <activity
+            android:name=".StudentCodeActivity"
+            android:exported="true" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true" />
         <activity

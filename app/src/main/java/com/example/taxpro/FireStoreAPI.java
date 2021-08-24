@@ -1,9 +1,17 @@
 package com.example.taxpro;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -12,11 +20,127 @@ import java.util.List;
 
 public class FireStoreAPI
 {
-    private FirebaseFirestore db= FirebaseFirestore.getInstance();
-    private ClassInfo classInfo=ClassInfo.getInstance();
-    private Student student=Student.getInstance();
+
+
+    private static FirebaseFirestore db= FirebaseFirestore.getInstance();
+    private static FirebaseAuth mAuth=FirebaseAuth.getInstance();
+    private static ClassInfo classInfo=ClassInfo.getInstance();
+    private static Student student=Student.getInstance();
 
     private List<String> list;
+
+
+    public static class Auth
+    {
+
+        public static void checkStudentCode(Context context, String studentCode, String password)
+        {
+            String classCode = studentCode.substring(0,6);
+            FireStoreAPI.db.collection("IntegratedManagement")
+                    .document(classCode)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            DocumentSnapshot document_ClassCode = task.getResult();
+                            if (document_ClassCode.exists())
+                            {
+                                        student.setClassCode(classCode);
+                                        FireStoreAPI.db.collection("IntegratedManagement/"+classCode+"/StudentList")
+                                                .document(studentCode)
+                                                .get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                                                {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                                                    {
+                                                        DocumentSnapshot document_studentCode = task.getResult();
+                                                        if (document_studentCode.exists())
+                                                        {
+                                                            student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                            student.setRegion(document_studentCode.get("Region").toString());
+                                                            student.setSchool(document_studentCode.get("School").toString());
+                                                            student.setGrade(document_studentCode.get("Grade").toString());
+                                                            checkEmail()
+                                                        }
+                                                        else
+                                                        {
+                                                            Toast.makeText(context,"올바르지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                                                        }
+
+                                                    }
+                                                });
+                            }
+                            else
+                            {
+                                Toast.makeText(context,"올바르지 않은 학급코드입니다. 정확한 학급코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+        }
+
+        private static void checkEmail(Context context, String classCode,String studentCode, String password)
+        {
+            FireStoreAPI.db.collection("IntegratedManagement/"+classCode+"/StudentList")
+                    .document(studentCode)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.getResult().get("Email") != "")
+                            {
+                                signIn()
+                            }
+                            else
+                            {
+                                Toast.makeText(context,"해당 학생코드는 등록되어 있지 않습니다. 먼저 회원가입 해주세요.",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+        }
+
+        private static void signIn(Context context, String email, String password)
+        {
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                Log.d("TAG", "signInWithEmail:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+
+                                if (user.isEmailVerified())
+                                {
+                                    student.setEmail(user.getEmail());
+                                    context.startActivity(new Intent(context,MainScreenActivity.class));
+                                }
+                                else
+                                {
+                                    Toast.makeText(context,"이메일 인증이 필요합니다.",Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                            else
+                                {
+
+                                Log.w("TAG", "signInWithEmail:failure", task.getException());
+
+
+                            }
+                        }
+                    });
+        }
+
+    }
 
     void getListOfSavingProduct()
     {
