@@ -23,6 +23,8 @@ public class MainScreenActivity extends AppCompatActivity
 
         student=Student.getInstance();
 
+
+
         Log.d("???",student.getClassCode());
         Log.d("???",student.getStudentCode());
         Log.d("???",student.getEmail());

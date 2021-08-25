@@ -199,9 +199,46 @@ public class FireStoreAPI
 
     }
 
+    public static class Class
+    {
+        public static void getClassInfo()
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/")
+                    .document(student.getClassCode())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                ArrayList<String> arrayList=(ArrayList<String>)task.getResult().get("StudentList");
+                                classInfo.setStudentList(arrayList);
+
+                                classInfo.setTheNumberOfStudent(Integer.valueOf(task.getResult().get("TheNumberOfStudent").toString()));
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    });
+        }
+    }
+
     public static class Bank
     {
         private static List<String> list;
+
+        public static void enrollSaving(Saving saving)
+        {
+            String document = String.valueOf(saving.getNumber())+saving.getNumber();
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
+                    .document(document)
+                    .set(saving);
+        }
 
         public static void getListOfSavingProduct()
         {

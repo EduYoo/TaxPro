@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".WorkActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/WorkActivity_btn_SavingRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="예금 등록하기"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_margin="5dp"
+        >
+
+    </Button>
+
+    <Button
+        android:id="@+id/WorkActivity_btn_SavingList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="예금 현황 보기"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_margin="5dp"
+        >
+
+    </Button>
+
+    <Button
+        android:id="@+id/WorkActivity_btn_SavingClosing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="예금 해지하기"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_margin="5dp"
+        >
+
+    </Button>
+
+</LinearLayout>
