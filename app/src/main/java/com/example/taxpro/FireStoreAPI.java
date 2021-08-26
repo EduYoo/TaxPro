@@ -12,11 +12,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FireStoreAPI
 {
@@ -213,8 +217,8 @@ public class FireStoreAPI
                         {
                             if (task.isSuccessful())
                             {
-                                ArrayList<String> arrayList=(ArrayList<String>)task.getResult().get("StudentList");
-                                classInfo.setStudentList(arrayList);
+                                Map<Integer,String> map=(Map<Integer,String>)task.getResult().get("StudentMap");
+                                classInfo.setStudentMap(map);
 
                                 classInfo.setTheNumberOfStudent(Integer.valueOf(task.getResult().get("TheNumberOfStudent").toString()));
 
@@ -232,13 +236,61 @@ public class FireStoreAPI
     {
         private static List<String> list;
 
-        public static void enrollSaving(Saving saving)
+        public static void enrollSaving(Context context, Saving saving)
         {
-            String document = String.valueOf(saving.getNumber())+saving.getNumber();
-            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
-                    .document(document)
-                    .set(saving);
+            String document = String.valueOf(saving.getNumber())+saving.getName();
+            DocumentReference documentSnapshot=
+                    db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
+                    .document(document);
+
+            documentSnapshot
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.getResult().exists())
+                            {
+                                Toast.makeText(context, "이미 등록된 학생입니다!", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                documentSnapshot.set(saving);
+                            }
+
+                        }
+                    });
+
         }
+
+        public static void seeSavingState(FireStoreGetCallback<Saving> callback)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                for (QueryDocumentSnapshot document:task.getResult())
+                                {
+                                    callback.callback((Saving) document.getData());
+                                }
+
+                            }
+                            else
+                            {
+                                
+                            }
+
+                        }
+                    });
+
+        }
+
 
         public static void getListOfSavingProduct()
         {
@@ -269,8 +321,8 @@ public class FireStoreAPI
 
         public static void getSavingProduct(FireStoreGetCallback<Double> callback, String saving)
         {
-            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/")
-                    .document("saving")
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/ListOfSavingProduct/")
+                    .document(saving)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                     {

@@ -1,7 +1,9 @@
 package com.example.taxpro;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClassInfo
 {
@@ -9,7 +11,7 @@ public class ClassInfo
     private int theNumberOfStudent=22;
 
     private List<String> listOfSavingProduct= new ArrayList<>();
-    private List<String> studentList= new ArrayList<>();
+    private Map<Integer,String> studentMap= new HashMap<>();
 
     private ClassInfo() {}
 
@@ -17,9 +19,9 @@ public class ClassInfo
 
     public int getTheNumberOfStudent() { return instance.theNumberOfStudent; }
     public List<String> getListOfSavingProduct() { return instance.listOfSavingProduct; }
-    public List<String> getStudentList() { return instance.studentList; }
+    public Map<Integer,String> getStudentMap() { return instance.studentMap; }
 
     public void setTheNumberOfStudent(int theNumberOfStudent) { instance.theNumberOfStudent = theNumberOfStudent; }
     public void setListOfSavingProduct(List<String> listOfSavingProduct) { instance.listOfSavingProduct = listOfSavingProduct; }
-    public void setStudentList(List<String> studentList) { instance.studentList = studentList; }
+    public void setStudentMap(Map<Integer,String> studentMap) { instance.studentMap = studentMap; }
 }

@@ -15,7 +15,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class WorkActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -37,7 +39,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayAdapter<String> nameAdapter;
 
     Integer[] numberArray;
-    List<String> nameArray;
+    Map<Integer,String> nameArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +57,19 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         savingRegistration_Btn=findViewById(R.id.WorkActivity_btn_SavingRegistration);
         savingList_Btn=findViewById(R.id.WorkActivity_btn_SavingList);
         savingClosing_Btn=findViewById(R.id.WorkActivity_btn_SavingClosing);
+
+        savingRegistration_Btn.setOnClickListener(this);
+        savingList_Btn.setOnClickListener(this);
+        savingClosing_Btn.setOnClickListener(this);
+
+        FireStoreAPI.Bank.getListOfSavingProduct();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        classInfo.getListOfSavingProduct().clear();
     }
 
     @Override
@@ -63,7 +78,6 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId())
         {
             case R.id.WorkActivity_btn_SavingRegistration:
-                FireStoreAPI.Bank.getListOfSavingProduct();
                 saving=new Saving();
 
                 selectSavingDialog();
@@ -135,7 +149,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
         View view = inflater.inflate(R.layout.activity_work_dialog_enter_amount,null);
 
-        savingAmount_Dialog_Edit=findViewById(R.id.WorkActivity_Dialog_EnterAmount_edit_Amount);
+        savingAmount_Dialog_Edit=view.findViewById(R.id.WorkActivity_Dialog_EnterAmount_edit_Amount);
 
         builder
                 .setView(view)
@@ -174,14 +188,14 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         View view = inflater.inflate(R.layout.activity_work_dialog_enter_info,null);
 
         numberArray=new Integer[classInfo.getTheNumberOfStudent()];
-        nameArray=classInfo.getStudentList();
+        nameArray=classInfo.getStudentMap();
 
         for (int i=1; i<=classInfo.getTheNumberOfStudent();i++)
         {
-            numberArray[i]=i;
+            numberArray[i-1]=i;
         }
 
-        numberSpinner=(Spinner) findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Number);
+        numberSpinner=(Spinner) view.findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Number);
         numberAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,numberArray);
         numberSpinner.setAdapter(numberAdapter);
         numberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -199,7 +213,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        nameSpinner=(Spinner) findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Name);
+        nameSpinner=(Spinner) view.findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Name);
         nameAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,nameArray);
         nameSpinner.setAdapter(nameAdapter);
         nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -223,6 +237,10 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
+
+                        saving.setRegistrationDate(new Date());
+                        saving.setPeriod(30);
+                        saving.setTotalTerm(90);
                         checkDialog();
                     }
                 })
@@ -251,7 +269,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        FireStoreAPI.Bank.enrollSaving(saving);
+                        FireStoreAPI.Bank.enrollSaving(context, saving);
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener()

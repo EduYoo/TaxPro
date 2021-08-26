@@ -2,12 +2,17 @@ package com.example.taxpro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 public class MainScreenActivity extends AppCompatActivity
 {
+    Context context;
+
     private Student student;
 
     Button scan_Btn;
@@ -21,6 +26,8 @@ public class MainScreenActivity extends AppCompatActivity
 
         getIntent();
 
+        context=this;
+
         student=Student.getInstance();
 
 
@@ -32,5 +39,15 @@ public class MainScreenActivity extends AppCompatActivity
         Log.d("???",student.getRegion());
         Log.d("???",student.getSchool());
         Log.d("???",student.getGrade());
+
+        work_Btn=findViewById(R.id.MainScreenActivity_btn_Work);
+        work_Btn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(context, WorkActivity.class));
+            }
+        });
     }
 }
