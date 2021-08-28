@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaxPro">
         <activity
+            android:name=".SavingStateActivity"
+            android:exported="true" />
+        <activity
             android:name=".WorkActivity"
             android:exported="true" />
         <activity

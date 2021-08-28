@@ -1,8 +1,9 @@
 package com.example.taxpro;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Saving
+public class Saving implements Serializable
 {
     private String type;
     private double rate;
@@ -16,6 +17,19 @@ public class Saving
     private int number;
 
     public Saving() {}
+
+    @Override
+    public String toString()
+    {
+        return "Saving{" +
+                "type='" + type + '\'' +
+                ", rate=" + rate +
+                ", amount=" + amount +
+                ", period=" + period +
+                ", name='" + name + '\'' +
+                ", number=" + number +
+                '}';
+    }
 
     public String getType() { return type; }
     public double getRate() { return rate; }

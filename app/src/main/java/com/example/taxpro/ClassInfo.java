@@ -11,7 +11,7 @@ public class ClassInfo
     private int theNumberOfStudent=22;
 
     private List<String> listOfSavingProduct= new ArrayList<>();
-    private Map<Integer,String> studentMap= new HashMap<>();
+    private HashMap<Integer,String> studentMap= new HashMap<>();
 
     private ClassInfo() {}
 
@@ -19,9 +19,9 @@ public class ClassInfo
 
     public int getTheNumberOfStudent() { return instance.theNumberOfStudent; }
     public List<String> getListOfSavingProduct() { return instance.listOfSavingProduct; }
-    public Map<Integer,String> getStudentMap() { return instance.studentMap; }
+    public HashMap<Integer,String> getStudentMap() { return instance.studentMap; }
 
     public void setTheNumberOfStudent(int theNumberOfStudent) { instance.theNumberOfStudent = theNumberOfStudent; }
     public void setListOfSavingProduct(List<String> listOfSavingProduct) { instance.listOfSavingProduct = listOfSavingProduct; }
-    public void setStudentMap(Map<Integer,String> studentMap) { instance.studentMap = studentMap; }
+    public void setStudentMap(HashMap<Integer,String> studentMap) { instance.studentMap = studentMap; }
 }

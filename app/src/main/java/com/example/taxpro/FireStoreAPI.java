@@ -19,6 +19,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -217,7 +218,7 @@ public class FireStoreAPI
                         {
                             if (task.isSuccessful())
                             {
-                                Map<Integer,String> map=(Map<Integer,String>)task.getResult().get("StudentMap");
+                                HashMap<Integer,String> map=(HashMap<Integer,String>)task.getResult().get("StudentMap");
                                 classInfo.setStudentMap(map);
 
                                 classInfo.setTheNumberOfStudent(Integer.valueOf(task.getResult().get("TheNumberOfStudent").toString()));
@@ -267,25 +268,15 @@ public class FireStoreAPI
         public static void seeSavingState(FireStoreGetCallback<Saving> callback)
         {
             db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
+                    .document("15유현석")
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                     {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
                         {
-                            if (task.isSuccessful())
-                            {
-                                for (QueryDocumentSnapshot document:task.getResult())
-                                {
-                                    callback.callback((Saving) document.getData());
-                                }
-
-                            }
-                            else
-                            {
-                                
-                            }
-
+                            callback.callback(task.getResult().toObject(Saving.class));
+                            Log.d("???!!!!!",task.getResult().toObject(Saving.class).getName());
                         }
                     });
 

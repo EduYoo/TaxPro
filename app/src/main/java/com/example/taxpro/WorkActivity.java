@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,7 +18,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,12 +39,15 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     EditText savingAmount_Dialog_Edit;
 
     private Spinner numberSpinner;
-    private Spinner nameSpinner;
+
     private ArrayAdapter<Integer> numberAdapter;
-    private ArrayAdapter<String> nameAdapter;
+
 
     Integer[] numberArray;
-    Map<Integer,String> nameArray;
+    HashMap<Integer, String> map;
+
+    ArrayList<Saving> savingStateList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -63,6 +71,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         savingClosing_Btn.setOnClickListener(this);
 
         FireStoreAPI.Bank.getListOfSavingProduct();
+
+
     }
 
     @Override
@@ -80,9 +90,23 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.WorkActivity_btn_SavingRegistration:
                 saving=new Saving();
 
+
                 selectSavingDialog();
                 break;
             case R.id.WorkActivity_btn_SavingList:
+                savingStateList= new ArrayList<>();
+
+                FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
+                {
+                    @Override
+                    public void callback(Saving object)
+                    {
+                        Log.d("???!!!",object.toString());
+                        savingStateList.add(object);
+                    }
+                });
+
+                startActivity(new Intent(context, SavingStateActivity.class).putExtra("SavingStateList", savingStateList));
 
                 break;
             case R.id.WorkActivity_btn_SavingClosing:
@@ -147,7 +171,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         LayoutInflater inflater=this.getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.activity_work_dialog_enter_amount,null);
+        View view = inflater.inflate(R.layout.activity_work_bank_dialog_enter_amount,null);
 
         savingAmount_Dialog_Edit=view.findViewById(R.id.WorkActivity_Dialog_EnterAmount_edit_Amount);
 
@@ -161,7 +185,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                         int amount=Integer.valueOf(savingAmount_Dialog_Edit.getText().toString());
                         saving.setAmount(amount);
 
-                        enterStudentInfoDialog();
+                        enterStudentNumberDialog();
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener()
@@ -180,15 +204,15 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    void enterStudentInfoDialog()
+    void enterStudentNumberDialog()
     {
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         LayoutInflater inflater=this.getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.activity_work_dialog_enter_info,null);
+        View view = inflater.inflate(R.layout.activity_work_bank_dialog_enter_number,null);
 
         numberArray=new Integer[classInfo.getTheNumberOfStudent()];
-        nameArray=classInfo.getStudentMap();
+
 
         for (int i=1; i<=classInfo.getTheNumberOfStudent();i++)
         {
@@ -213,23 +237,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        nameSpinner=(Spinner) view.findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Name);
-        nameAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,nameArray);
-        nameSpinner.setAdapter(nameAdapter);
-        nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                saving.setName(adapterView.getItemAtPosition(i).toString());
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView)
-            {
-                Toast.makeText(context, "이름을 선택하세요!", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
         builder.setView(view)
                 .setPositiveButton("확인", new DialogInterface.OnClickListener()
@@ -237,10 +246,15 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
+                        Log.d("???",String.valueOf(saving.getNumber()));
 
                         saving.setRegistrationDate(new Date());
                         saving.setPeriod(30);
                         saving.setTotalTerm(90);
+                        saving.setName(classInfo.getStudentMap().get(saving.getNumber()));
+
+
+
                         checkDialog();
                     }
                 })
@@ -264,6 +278,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
         builder
                 .setTitle("등록하시겠습니까?")
+                .setTitle(saving.getName()+" 학생으로 예금 가입을 진행하시겠습니까?")
                 .setPositiveButton("확인", new DialogInterface.OnClickListener()
                 {
                     @Override
