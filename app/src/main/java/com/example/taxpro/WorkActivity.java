@@ -1,7 +1,10 @@
 package com.example.taxpro;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +13,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +22,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,11 +56,13 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Saving> savingStateList;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
+
 
         getIntent();
 
@@ -71,6 +80,16 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         savingClosing_Btn.setOnClickListener(this);
 
         FireStoreAPI.Bank.getListOfSavingProduct();
+
+        savingStateList= new ArrayList<>();
+        FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
+        {
+            @Override
+            public void callback(Saving object)
+            {
+                savingStateList.add((Saving) object);
+            }
+        });
 
 
     }
@@ -94,19 +113,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                 selectSavingDialog();
                 break;
             case R.id.WorkActivity_btn_SavingList:
-                savingStateList= new ArrayList<>();
 
-                FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
-                {
-                    @Override
-                    public void callback(Saving object)
-                    {
-                        Log.d("???!!!",object.toString());
-                        savingStateList.add(object);
-                    }
-                });
-
-                startActivity(new Intent(context, SavingStateActivity.class).putExtra("SavingStateList", savingStateList));
+                startActivity(new Intent(context, SavingStateActivity.class));
 
                 break;
             case R.id.WorkActivity_btn_SavingClosing:
@@ -115,6 +123,9 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
+
+
 
 
 
@@ -219,6 +230,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
             numberArray[i-1]=i;
         }
 
+        Log.d("???", classInfo.getStudentMap().toString());
+
         numberSpinner=(Spinner) view.findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Number);
         numberAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,numberArray);
         numberSpinner.setAdapter(numberAdapter);
@@ -227,7 +240,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                saving.setNumber(Integer.valueOf(adapterView.getItemAtPosition(i).toString()));
+                saving.setNumber(adapterView.getItemAtPosition(i).toString());
             }
 
             @Override
@@ -248,7 +261,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         Log.d("???",String.valueOf(saving.getNumber()));
 
-                        saving.setRegistrationDate(new Date());
+                        saving.setCloseOrNot(false);
+                        saving.setRegistrationDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                         saving.setPeriod(30);
                         saving.setTotalTerm(90);
                         saving.setName(classInfo.getStudentMap().get(saving.getNumber()));

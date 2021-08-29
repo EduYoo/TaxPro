@@ -1,6 +1,7 @@
 package com.example.taxpro;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Saving implements Serializable
@@ -9,12 +10,15 @@ public class Saving implements Serializable
     private double rate;
     private int amount;
 
-    private Date registrationDate;
+    private boolean closeOrNot;
+
+    private String registrationDate ;
+    private String dueDate;
     private int totalTerm;
     private int period; // 15,30 etc...
 
     private String name;
-    private int number;
+    private String number;
 
     public Saving() {}
 
@@ -34,18 +38,22 @@ public class Saving implements Serializable
     public String getType() { return type; }
     public double getRate() { return rate; }
     public int getAmount() { return amount; }
-    public Date getRegistrationDate() { return registrationDate; }
+    public boolean isCloseOrNot() { return closeOrNot; }
+    public String getRegistrationDate() { return registrationDate; }
+    public String getDueDate() { return dueDate; }
     public int getTotalTerm() { return totalTerm; }
     public int getPeriod() { return period; }
     public String getName() { return name; }
-    public int getNumber() { return number; }
+    public String getNumber() { return number; }
 
     public void setType(String type) { this.type = type; }
     public void setRate(double rate) { this.rate = rate; }
     public void setAmount(int amount) { this.amount = amount; }
-    public void setRegistrationDate(Date registrationDate) { this.registrationDate = registrationDate; }
+    public void setCloseOrNot(boolean closeOrNot) { this.closeOrNot = closeOrNot; }
+    public void setRegistrationDate(String registrationDate) { this.registrationDate = registrationDate; }
+    public void setDueDate(String dueDate) { this.dueDate = dueDate; }
     public void setTotalTerm(int totalTerm) { this.totalTerm = totalTerm; }
     public void setPeriod(int period) { this.period = period; }
     public void setName(String name) { this.name = name; }
-    public void setNumber(int number) { this.number = number; }
+    public void setNumber(String number) { this.number = number; }
 }

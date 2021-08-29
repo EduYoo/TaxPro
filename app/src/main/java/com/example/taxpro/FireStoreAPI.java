@@ -218,7 +218,7 @@ public class FireStoreAPI
                         {
                             if (task.isSuccessful())
                             {
-                                HashMap<Integer,String> map=(HashMap<Integer,String>)task.getResult().get("StudentMap");
+                                HashMap<String,String> map=(HashMap<String,String>)task.getResult().get("StudentMap");
                                 classInfo.setStudentMap(map);
 
                                 classInfo.setTheNumberOfStudent(Integer.valueOf(task.getResult().get("TheNumberOfStudent").toString()));
@@ -268,18 +268,26 @@ public class FireStoreAPI
         public static void seeSavingState(FireStoreGetCallback<Saving> callback)
         {
             db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
-                    .document("15유현석")
+                    .whereEqualTo("closeOrNot",false)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                     {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
                         {
-                            callback.callback(task.getResult().toObject(Saving.class));
-                            Log.d("???!!!!!",task.getResult().toObject(Saving.class).getName());
+                            for (QueryDocumentSnapshot document :task.getResult())
+                            {
+                                callback.callback(document.toObject(Saving.class));
+                            }
                         }
                     });
+        }
 
+        public static void closeSaving(int number, String name)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
+                    .document(number+name)
+                    .update("closeOrNot", true);
         }
 
 

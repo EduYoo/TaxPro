@@ -26,6 +26,8 @@ public class MainScreenActivity extends AppCompatActivity
 
         getIntent();
 
+        FireStoreAPI.Class.getClassInfo();
+
         context=this;
 
         student=Student.getInstance();
@@ -39,6 +41,8 @@ public class MainScreenActivity extends AppCompatActivity
         Log.d("???",student.getRegion());
         Log.d("???",student.getSchool());
         Log.d("???",student.getGrade());
+
+
 
         work_Btn=findViewById(R.id.MainScreenActivity_btn_Work);
         work_Btn.setOnClickListener(new View.OnClickListener()
