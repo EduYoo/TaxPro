@@ -26,6 +26,7 @@ import android.widget.ViewAnimator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,8 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     Integer[] numberArray;
     HashMap<Integer, String> map;
 
-    ArrayList<Saving> savingStateList;
+    ArrayList<Saving> savingList;
+
 
 
 
@@ -79,18 +81,17 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         savingList_Btn.setOnClickListener(this);
         savingClosing_Btn.setOnClickListener(this);
 
-        FireStoreAPI.Bank.getListOfSavingProduct();
+        savingList=new ArrayList<>();
 
-        savingStateList= new ArrayList<>();
+        FireStoreAPI.Bank.getListOfSavingProduct();
         FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
         {
             @Override
             public void callback(Saving object)
             {
-                savingStateList.add((Saving) object);
+                savingList.add(object);
             }
         });
-
 
     }
 
@@ -108,17 +109,13 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         {
             case R.id.WorkActivity_btn_SavingRegistration:
                 saving=new Saving();
-
-
                 selectSavingDialog();
                 break;
             case R.id.WorkActivity_btn_SavingList:
-
-                startActivity(new Intent(context, SavingStateActivity.class));
-
+                startActivity(new Intent(context, SavingStateActivity.class).putExtra("savingList",savingList));
                 break;
             case R.id.WorkActivity_btn_SavingClosing:
-
+                startActivity(new Intent(context, SavingClosingActivity.class).putExtra("savingList",savingList));
                 break;
         }
 
@@ -261,8 +258,13 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         Log.d("???",String.valueOf(saving.getNumber()));
 
+                        Calendar calendar=Calendar.getInstance();
+                        calendar.setTime(new Date());
+                        calendar.add(Calendar.DATE,90);
+
                         saving.setCloseOrNot(false);
                         saving.setRegistrationDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+                        saving.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
                         saving.setPeriod(30);
                         saving.setTotalTerm(90);
                         saving.setName(classInfo.getStudentMap().get(saving.getNumber()));

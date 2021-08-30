@@ -14,6 +14,7 @@ public class Saving implements Serializable
 
     private String registrationDate ;
     private String dueDate;
+    private String dDay;
     private int totalTerm;
     private int period; // 15,30 etc...
 
@@ -29,9 +30,14 @@ public class Saving implements Serializable
                 "type='" + type + '\'' +
                 ", rate=" + rate +
                 ", amount=" + amount +
+                ", closeOrNot=" + closeOrNot +
+                ", registrationDate='" + registrationDate + '\'' +
+                ", dueDate='" + dueDate + '\'' +
+                ", dDay='" + dDay + '\'' +
+                ", totalTerm=" + totalTerm +
                 ", period=" + period +
                 ", name='" + name + '\'' +
-                ", number=" + number +
+                ", number='" + number + '\'' +
                 '}';
     }
 
@@ -41,6 +47,7 @@ public class Saving implements Serializable
     public boolean isCloseOrNot() { return closeOrNot; }
     public String getRegistrationDate() { return registrationDate; }
     public String getDueDate() { return dueDate; }
+    public String getdDay() { return dDay; }
     public int getTotalTerm() { return totalTerm; }
     public int getPeriod() { return period; }
     public String getName() { return name; }
@@ -52,6 +59,7 @@ public class Saving implements Serializable
     public void setCloseOrNot(boolean closeOrNot) { this.closeOrNot = closeOrNot; }
     public void setRegistrationDate(String registrationDate) { this.registrationDate = registrationDate; }
     public void setDueDate(String dueDate) { this.dueDate = dueDate; }
+    public void setdDay(String dDay) { this.dDay = dDay; }
     public void setTotalTerm(int totalTerm) { this.totalTerm = totalTerm; }
     public void setPeriod(int period) { this.period = period; }
     public void setName(String name) { this.name = name; }

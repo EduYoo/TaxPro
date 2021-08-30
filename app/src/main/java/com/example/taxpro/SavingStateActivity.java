@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class SavingStateActivity extends AppCompatActivity
 {
-    Context context;
-    protected ArrayList<String> mDataSet;
+    private Context context;
+    private ArrayList<Saving> savingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,24 +21,18 @@ public class SavingStateActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saving_state);
 
-        getIntent();
-
-
-
         context=this;
 
-        SavingAdapter savingAdapter= new SavingAdapter();
+        savingList=(ArrayList<Saving>) getIntent().getSerializableExtra("savingList");
 
-
+        SavingAdapter adapter = new SavingAdapter(context,savingList);
 
         RecyclerView recyclerView = findViewById(R.id.SavingStateActivity_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(), new  LinearLayoutManager(this).getOrientation());
         recyclerView.addItemDecoration(decoration);
 
-
-
-        recyclerView.setAdapter(savingAdapter);
+        recyclerView.setAdapter(adapter);
 
 
 

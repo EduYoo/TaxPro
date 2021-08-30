@@ -6,7 +6,7 @@
     >
 
     <TextView
-        android:id="@+id/SavingStateActivity_Row_Item_Number"
+        android:id="@+id/SavingClosingActivity_Row_Item_Number"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
@@ -15,7 +15,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/SavingStateActivity_Row_Item_Name"
+        android:id="@+id/SavingClosingActivity_Row_Item_Name"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
@@ -24,7 +24,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/SavingStateActivity_Row_Item_SavingType"
+        android:id="@+id/SavingClosingActivity_Row_Item_SavingType"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
@@ -33,7 +33,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/SavingStateActivity_Row_Item_Dday"
+        android:id="@+id/SavingClosingActivity_Row_Item_Dday"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
@@ -42,13 +42,24 @@
     </TextView>
 
     <TextView
-        android:id="@+id/SavingStateActivity_Row_Item_DueDate"
+        android:id="@+id/SavingClosingActivity_Row_Item_DueDate"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
         android:layout_weight="3">
 
     </TextView>
+
+    <Button
+        android:id="@+id/SavingClosingActivity_Row_Item_btn_Closing"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="만기"
+        android:textSize="20sp"
+        android:layout_weight="1"
+        >
+
+    </Button>
 
 
 

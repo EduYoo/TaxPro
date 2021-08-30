@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -268,22 +269,32 @@ public class FireStoreAPI
         public static void seeSavingState(FireStoreGetCallback<Saving> callback)
         {
             db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
-                    .whereEqualTo("closeOrNot",false)
+
+                    .whereEqualTo("closeOrNot", false)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
                     {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task)
                         {
-                            for (QueryDocumentSnapshot document :task.getResult())
+                            if (task.isSuccessful())
                             {
-                                callback.callback(document.toObject(Saving.class));
+                                for (QueryDocumentSnapshot document:task.getResult())
+                                {
+                                    callback.callback(document.toObject(Saving.class));
+                                }
+                            }
+                            else
+                            {
+
                             }
                         }
                     });
+
         }
 
-        public static void closeSaving(int number, String name)
+
+        public static void closeSaving(String number, String name)
         {
             db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
                     .document(number+name)
