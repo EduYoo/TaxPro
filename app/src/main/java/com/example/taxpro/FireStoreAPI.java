@@ -14,12 +14,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -203,7 +209,8 @@ public class FireStoreAPI
                                         });
 
                                 enrollStudent();
-                                Bank.openAccount(new Account("OrdinaryAccount"));
+                                Bank.openAccount(new Account("OrdinaryAccount"), new AccountLog(false,0, LocalDate.now().toString(), LocalTime.now().toString()),student.getNumber(),student.getName());
+
 
 
                                 context.startActivity(new Intent(context,LoginActivity.class));
@@ -271,7 +278,7 @@ public class FireStoreAPI
     {
         private static List<String> list;
 
-        public static void openAccount(Account account)
+        public static void openAccount(Account account, AccountLog log, String number, String name)
         {
             switch (account.getAccountType())
             {
@@ -280,21 +287,29 @@ public class FireStoreAPI
                             .document(student.getNumber()+student.getName())
                             .set(account);
 
+                    addAccountLog(account, log, number, name);
                     break;
 
                 default:
+
             }
 
         }
 
-        public static void addAccountLog(Account account, Account.AccountLog log, String number, String name)
+        public static void addAccountLog(Account account, AccountLog log, String number, String name)
         {
             switch (account.getAccountType())
             {
                 case "OrdinaryAccount":
                     db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+
                             "/INFO/Banking/OrdinaryAccount/"+number+name+"/Logs")
-                            .document(log.getDateOfTransaction()+log.getTimeOfTransaction())
+                            .document(log.getDateOfTransaction()+"_"+log.getTimeOfTransaction())
+                            .set(log);
+                    break;
+                case "SavingsAccount":
+                    db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+
+                            "/INFO/Banking/SavingsAccount/"+number+name+"/Logs")
+                            .document(log.getDateOfTransaction()+"_"+log.getTimeOfTransaction())
                             .set(log);
                     break;
                 default:
@@ -303,20 +318,34 @@ public class FireStoreAPI
 
         }
 
-        public static void deposit(Account account, String number, String name)
+        public static void deposit(Account account, double amount, String number, String name)
         {
             switch (account.getAccountType())
             {
                 case "OrdinaryAccount":
-
+                            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+
+                            "/INFO/Banking/OrdinaryAccount/")
+                                    .document(number+name)
+                                    .update("balance", FieldValue.increment(amount));
                     break;
                 default:
             }
 
         }
 
-        public static void withdraw(Account account, String number, String name)
+        public static void withdraw(Account account, double amount, String number, String name)
         {
+            switch (account.getAccountType())
+            {
+                case "OrdinaryAccount":
+                    db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+
+                            "/INFO/Banking/OrdinaryAccount/")
+                            .document(number+name)
+                            .update("balance", FieldValue.increment(-amount));
+
+                    break;
+                default:
+            }
 
         }
 
@@ -342,6 +371,7 @@ public class FireStoreAPI
                             else
                             {
                                 documentSnapshot.set(saving);
+                                addAccountLog(saving,new AccountLog(true,0,LocalDate.now().toString(),LocalTime.now().toString()),saving.getNumber(),saving.getName());
                             }
 
                         }
@@ -448,6 +478,21 @@ public class FireStoreAPI
                     });
 
 
+        }
+    }
+
+    public static class Investment
+    {
+
+    }
+
+    public static class CreditRating
+    {
+        public static void rateCreditScore(int score, String number, String name)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Student/StudentList/")
+                    .document(number+name)
+                    .update("creditScore",FieldValue.increment(score));
         }
     }
 

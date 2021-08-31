@@ -23,7 +23,7 @@ public class Saving extends Account implements Serializable
 
     public Saving()
     {
-        super();
+        super("SavingsAccount");
     }
 
     @Override

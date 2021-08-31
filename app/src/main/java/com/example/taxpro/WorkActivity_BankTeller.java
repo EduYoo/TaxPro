@@ -316,6 +316,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
                         saving.setCloseOrNot(false);
                         saving.setRegistrationDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                         saving.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+                        saving.setBalance(0);
                         saving.setdDay("90");
                         saving.setPeriod(30);
                         saving.setTotalTerm(90);

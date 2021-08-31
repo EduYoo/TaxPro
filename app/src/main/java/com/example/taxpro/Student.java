@@ -15,6 +15,7 @@ public class Student
     private String number;
 
     private String job;
+    private int creditScore;
 
     private Student() { }
 

@@ -12,15 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
 
-public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder>
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>
 {
-    private ArrayList<Saving> list;
+    private ArrayList<?> list;
     private Context context;
 
-    public SavingAdapter(Context context, ArrayList<Saving> list)
+    public CustomAdapter(Context context, ArrayList<Saving> list)
     {
         this.context=context;
         this.list = list;
@@ -61,30 +59,33 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
         viewHolder.itemView.getLayoutParams().height=100;
         viewHolder.itemView.requestLayout();
 
-        if (context instanceof SavingStateActivity)
+        if (context instanceof SavingStateActivity )
         {
-            viewHolder.getNumber_Text().setText(list.get(position).getNumber());
-            viewHolder.getName_Text().setText(list.get(position).getName());
-            viewHolder.getSaving_Text().setText(list.get(position).getType());
-            viewHolder.getdDay_Text().setText(list.get(position).getdDay());
-            viewHolder.getDueDate_Text().setText(list.get(position).getDueDate());
+            ArrayList<Saving> list_=(ArrayList<Saving>) list;
+
+            viewHolder.getNumber_Text().setText(list_.get(position).getNumber());
+            viewHolder.getName_Text().setText(list_.get(position).getName());
+            viewHolder.getSaving_Text().setText(list_.get(position).getType());
+            viewHolder.getdDay_Text().setText(list_.get(position).getdDay());
+            viewHolder.getDueDate_Text().setText(list_.get(position).getDueDate());
 
         }
         else if (context instanceof SavingClosingActivity)
         {
+            ArrayList<Saving> list_=(ArrayList<Saving>) list;
 
-            viewHolder.getNumber_Text().setText(list.get(position).getNumber());
-            viewHolder.getName_Text().setText(list.get(position).getName());
-            viewHolder.getSaving_Text().setText(list.get(position).getType());
-            viewHolder.getdDay_Text().setText(list.get(position).getdDay());
-            viewHolder.getDueDate_Text().setText(list.get(position).getDueDate());
+            viewHolder.getNumber_Text().setText(list_.get(position).getNumber());
+            viewHolder.getName_Text().setText(list_.get(position).getName());
+            viewHolder.getSaving_Text().setText(list_.get(position).getType());
+            viewHolder.getdDay_Text().setText(list_.get(position).getdDay());
+            viewHolder.getDueDate_Text().setText(list_.get(position).getDueDate());
 
             viewHolder.getClosing_Btn().setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    FireStoreAPI.Bank.closeSaving(list.get(viewHolder.getAdapterPosition()).getNumber(), list.get(position).getName());
+                    FireStoreAPI.Bank.closeSaving(list_.get(viewHolder.getAdapterPosition()).getNumber(), list_.get(viewHolder.getAdapterPosition()).getName());
                 }
             });
 

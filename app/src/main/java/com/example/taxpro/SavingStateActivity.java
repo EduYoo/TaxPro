@@ -1,15 +1,11 @@
 package com.example.taxpro;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.View;
 
 import java.util.ArrayList;
 
@@ -28,7 +24,7 @@ public class SavingStateActivity extends AppCompatActivity
 
         savingList=(ArrayList<Saving>) getIntent().getSerializableExtra("savingList");
 
-        SavingAdapter adapter = new SavingAdapter(context,savingList);
+        CustomAdapter adapter = new CustomAdapter(context,savingList);
 
         RecyclerView recyclerView = findViewById(R.id.SavingStateActivity_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
