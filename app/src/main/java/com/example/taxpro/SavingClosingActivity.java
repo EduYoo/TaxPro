@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,11 @@ public class SavingClosingActivity extends AppCompatActivity
         setContentView(R.layout.activity_saving_closing);
 
         context=this;
+        createRecyclerView();
+    }
 
+    public void createRecyclerView()
+    {
         savingList=(ArrayList<Saving>) getIntent().getSerializableExtra("savingList");
 
         SavingAdapter adapter = new SavingAdapter(context,savingList);
@@ -34,5 +39,6 @@ public class SavingClosingActivity extends AppCompatActivity
         recyclerView.addItemDecoration(decoration);
 
         recyclerView.setAdapter(adapter);
+
     }
 }

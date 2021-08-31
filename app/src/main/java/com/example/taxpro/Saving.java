@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Saving implements Serializable
+public class Saving extends Account implements Serializable
 {
     private String type;
     private double rate;
@@ -21,24 +21,15 @@ public class Saving implements Serializable
     private String name;
     private String number;
 
-    public Saving() {}
+    public Saving()
+    {
+        super();
+    }
 
     @Override
     public String toString()
     {
-        return "Saving{" +
-                "type='" + type + '\'' +
-                ", rate=" + rate +
-                ", amount=" + amount +
-                ", closeOrNot=" + closeOrNot +
-                ", registrationDate='" + registrationDate + '\'' +
-                ", dueDate='" + dueDate + '\'' +
-                ", dDay='" + dDay + '\'' +
-                ", totalTerm=" + totalTerm +
-                ", period=" + period +
-                ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                '}';
+        return "Saving{"+ type + " "+  name + '}'+'\'';
     }
 
     public String getType() { return type; }

@@ -12,6 +12,7 @@ public class Student
     private String studentCode;
     private String email;
     private String name;
+    private String number;
 
     private String job;
 
@@ -35,6 +36,7 @@ public class Student
     public String getStudentCode() { return student.studentCode; }
     public String getEmail() { return student.email; }
     public String getName() { return student.name; }
+    public String getNumber() { return number; }
     public String getJob() { return student.job; }
 
     public void setRegion(String region) { student.region = region; }
@@ -45,5 +47,6 @@ public class Student
     public void setStudentCode(String studentCode) { student.studentCode = studentCode; }
     public void setEmail(String email) { student.email = email; }
     public void setName(String name) { student.name = name; }
+    public void setNumber(String number) { this.number = number; }
     public void setJob(String job) { student.job = job; }
 }

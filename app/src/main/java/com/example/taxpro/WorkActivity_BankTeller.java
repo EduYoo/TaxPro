@@ -1,20 +1,14 @@
 package com.example.taxpro;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,17 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import android.widget.ViewAnimator;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public class WorkActivity extends AppCompatActivity implements View.OnClickListener
+public class WorkActivity_BankTeller extends AppCompatActivity implements View.OnClickListener
 {
     private Context context;
 
@@ -44,17 +36,19 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     private Button savingList_Btn;
     private Button savingClosing_Btn;
 
-    EditText savingAmount_Dialog_Edit;
+    private EditText savingAmount_Dialog_Edit;
 
     private Spinner numberSpinner;
 
     private ArrayAdapter<Integer> numberAdapter;
 
 
-    Integer[] numberArray;
-    HashMap<Integer, String> map;
+    private Integer[] numberArray;
+    private HashMap<Integer, String> map;
 
-    ArrayList<Saving> savingList;
+    private ArrayList<Saving> savingList;
+    private ArrayList<Saving> savingClosingList;
+    private Calendar calendar;
 
 
 
@@ -63,7 +57,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work);
+        setContentView(R.layout.activity_work_bank_teller);
 
 
         getIntent();
@@ -72,33 +66,51 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
         classInfo=ClassInfo.getInstance();
         student=Student.getInstance();
+        calendar=Calendar.getInstance();
 
-        savingRegistration_Btn=findViewById(R.id.WorkActivity_btn_SavingRegistration);
-        savingList_Btn=findViewById(R.id.WorkActivity_btn_SavingList);
-        savingClosing_Btn=findViewById(R.id.WorkActivity_btn_SavingClosing);
+        savingRegistration_Btn=findViewById(R.id.WorkActivity_BankTeller_btn_SavingRegistration);
+        savingList_Btn=findViewById(R.id.WorkActivity_BankTeller_btn_SavingList);
+        savingClosing_Btn=findViewById(R.id.WorkActivity_BankTeller_btn_SavingClosing);
 
         savingRegistration_Btn.setOnClickListener(this);
         savingList_Btn.setOnClickListener(this);
         savingClosing_Btn.setOnClickListener(this);
 
         savingList=new ArrayList<>();
+        savingClosingList=new ArrayList<>();
 
         FireStoreAPI.Bank.getListOfSavingProduct();
-        FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
-        {
-            @Override
-            public void callback(Saving object)
-            {
-                savingList.add(object);
-            }
-        });
 
+
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        savingList.clear();
+        savingClosingList.clear();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        seeSavingState();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
+        savingList.clear();
+        savingClosingList.clear();
         classInfo.getListOfSavingProduct().clear();
     }
 
@@ -107,18 +119,46 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
     {
         switch (view.getId())
         {
-            case R.id.WorkActivity_btn_SavingRegistration:
+            case R.id.WorkActivity_BankTeller_btn_SavingRegistration:
                 saving=new Saving();
                 selectSavingDialog();
                 break;
-            case R.id.WorkActivity_btn_SavingList:
+            case R.id.WorkActivity_BankTeller_btn_SavingList:
                 startActivity(new Intent(context, SavingStateActivity.class).putExtra("savingList",savingList));
                 break;
-            case R.id.WorkActivity_btn_SavingClosing:
-                startActivity(new Intent(context, SavingClosingActivity.class).putExtra("savingList",savingList));
+            case R.id.WorkActivity_BankTeller_btn_SavingClosing:
+                startActivity(new Intent(context, SavingClosingActivity.class).putExtra("savingList",savingClosingList));
                 break;
         }
 
+    }
+
+    private void seeSavingState()
+    {
+        FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
+        {
+            @Override
+            public void callback(Saving object) throws ParseException
+            {
+                Calendar today=Calendar.getInstance();
+                today.setTime(new Date());
+
+                Calendar dueDate=Calendar.getInstance();
+                Date date_Due= new SimpleDateFormat("yyyy-MM-dd").parse(object.getDueDate());
+                dueDate.setTime(date_Due);
+
+                long dSec=(dueDate.getTimeInMillis()-today.getTimeInMillis())/1000;
+                long dDay= dSec/(24*60*60);
+                object.setdDay(String.valueOf(dDay));
+
+
+                if (dDay>0)
+                    savingList.add(object);
+                if (dDay<=0)
+                    savingClosingList.add(object);
+
+            }
+        });
     }
 
 
@@ -128,6 +168,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
     void selectSavingDialog()
     {
+
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
 
         int size = classInfo.getListOfSavingProduct().size();
@@ -148,17 +189,27 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        FireStoreAPI.Bank.getSavingProduct(new FireStoreGetCallback<Double>()
+                        if (saving.getType()==null)
                         {
-                            @Override
-                            public void callback(Double object)
+                            Toast.makeText(context, "예금 상품을 선택해주세요!", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            FireStoreAPI.Bank.getSavingProduct(new FireStoreGetCallback<Double>()
                             {
-                                saving.setRate(object);
-                            }
-                        }, saving.getType());
+                                @Override
+                                public void callback(Double object)
+                                {
+                                    saving.setRate(object);
+                                }
+                            }, saving.getType());
+
+                            enterAmountDialog();
+                        }
 
 
-                        enterAmountDialog();
+
+
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener()
@@ -179,9 +230,9 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         LayoutInflater inflater=this.getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.activity_work_bank_dialog_enter_amount,null);
+        View view = inflater.inflate(R.layout.activity_work_bank_teller_dialog_enter_amount,null);
 
-        savingAmount_Dialog_Edit=view.findViewById(R.id.WorkActivity_Dialog_EnterAmount_edit_Amount);
+        savingAmount_Dialog_Edit=view.findViewById(R.id.WorkActivity_BankTeller_Dialog_EnterAmount_edit_Amount);
 
         builder
                 .setView(view)
@@ -217,7 +268,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         LayoutInflater inflater=this.getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.activity_work_bank_dialog_enter_number,null);
+        View view = inflater.inflate(R.layout.activity_work_bank_teller_dialog_enter_number,null);
 
         numberArray=new Integer[classInfo.getTheNumberOfStudent()];
 
@@ -229,7 +280,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.d("???", classInfo.getStudentMap().toString());
 
-        numberSpinner=(Spinner) view.findViewById(R.id.WorkActivity_Dialog_EnterInfo_spinner_Number);
+        numberSpinner=(Spinner) view.findViewById(R.id.WorkActivity_BankTeller_Dialog_EnterInfo_spinner_Number);
         numberAdapter=new ArrayAdapter<>(context,R.layout.support_simple_spinner_dropdown_item,numberArray);
         numberSpinner.setAdapter(numberAdapter);
         numberSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -258,13 +309,14 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     {
                         Log.d("???",String.valueOf(saving.getNumber()));
 
-                        Calendar calendar=Calendar.getInstance();
+
                         calendar.setTime(new Date());
                         calendar.add(Calendar.DATE,90);
 
                         saving.setCloseOrNot(false);
                         saving.setRegistrationDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
                         saving.setDueDate(new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime()));
+                        saving.setdDay("90");
                         saving.setPeriod(30);
                         saving.setTotalTerm(90);
                         saving.setName(classInfo.getStudentMap().get(saving.getNumber()));
@@ -290,6 +342,7 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
 
     void checkDialog()
     {
+
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
 
         builder
@@ -300,7 +353,10 @@ public class WorkActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
+                        savingList.clear();
+                        savingClosingList.clear();
                         FireStoreAPI.Bank.enrollSaving(context, saving);
+                        seeSavingState();
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener()

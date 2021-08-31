@@ -12,17 +12,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FireStoreAPI
 {
@@ -51,43 +50,47 @@ public class FireStoreAPI
                             DocumentSnapshot document_ClassCode = task.getResult();
                             if (document_ClassCode.exists())
                             {
-                                        student.setClassCode(classCode);
-                                        FireStoreAPI.db.collection("IntegratedManagement/"+classCode+"/StudentList")
-                                                .document(studentCode)
-                                                .get()
-                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                                student.setClassCode(classCode);
+                                db.collection("IntegratedManagement/"+classCode+"/StudentList")
+                                        .document(studentCode)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                                        {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                                            {
+                                                DocumentSnapshot document_studentCode = task.getResult();
+                                                if (document_studentCode.exists())
                                                 {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task)
-                                                    {
-                                                        DocumentSnapshot document_studentCode = task.getResult();
-                                                        if (document_studentCode.exists())
-                                                        {
-                                                            Log.d("???", context.toString());
-                                                            student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                    Log.d("???", context.toString());
+                                                    student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                    student.setRegion(document_studentCode.get("Region").toString());
+                                                    student.setSchool(document_studentCode.get("School").toString());
+                                                    student.setGrade(document_studentCode.get("Grade").toString());
+                                                    student.setName(document_studentCode.get("Name").toString());
+                                                    student.setNumber(document_studentCode.get("Number").toString());
+
+                                                    checkEmail(context, classCode, studentCode, password);
+
+                                                            /*
                                                             if(context instanceof LoginActivity)
                                                             {
-
-                                                                student.setRegion(document_studentCode.get("Region").toString());
-                                                                student.setSchool(document_studentCode.get("School").toString());
-                                                                student.setGrade(document_studentCode.get("Grade").toString());
-                                                                student.setName(document_studentCode.get("Name").toString());
                                                                 checkEmail(context, classCode, studentCode, password);
                                                             }
                                                             else if(context instanceof StudentCodeActivity)
                                                             {
                                                                 context.startActivity(new Intent(context,SignUpActivity.class));
-                                                            }
+                                                            }*/
 
 
-                                                        }
-                                                        else
-                                                        {
-                                                            Toast.makeText(context,"올바르지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
-                                                        }
+                                                }
+                                                else
+                                                {
+                                                    Toast.makeText(context,"올바르지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                                                }
 
-                                                    }
-                                                });
+                                            }
+                                        });
                             }
                             else
                             {
@@ -100,7 +103,7 @@ public class FireStoreAPI
 
         private static void checkEmail(Context context, String classCode, String studentCode, String password)
         {
-            FireStoreAPI.db.collection("IntegratedManagement/"+classCode+"/StudentList")
+            db.collection("IntegratedManagement/"+classCode+"/StudentList")
                     .document(studentCode)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
@@ -108,14 +111,32 @@ public class FireStoreAPI
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task)
                         {
-                            if (task.getResult().get("Email") != "")
+                            if (context instanceof LoginActivity)
                             {
-                                signIn(context,task.getResult().get("Email").toString(),password);
+                                if (task.getResult().get("Email") != "")
+                                {
+                                    signIn(context,task.getResult().get("Email").toString(),password);
+                                }
+                                else
+                                {
+                                    Toast.makeText(context,"해당 학생코드는 등록되어 있지 않습니다. 먼저 회원가입 해주세요.",Toast.LENGTH_SHORT).show();
+                                }
+
                             }
-                            else
+                            else if (context instanceof StudentCodeActivity)
                             {
-                                Toast.makeText(context,"해당 학생코드는 등록되어 있지 않습니다. 먼저 회원가입 해주세요.",Toast.LENGTH_SHORT).show();
+                                if (task.getResult().get("Email") == "")
+                                {
+                                    context.startActivity(new Intent(context,SignUpActivity.class));
+                                }
+                                else
+                                {
+                                    Toast.makeText(context,"해당 학생코드는 등록되어 있습니다. 로그인 해주세요.",Toast.LENGTH_SHORT).show();
+                                    context.startActivity(new Intent(context,LoginActivity.class));
+                                }
+
                             }
+
                         }
                     });
 
@@ -146,7 +167,7 @@ public class FireStoreAPI
 
                             }
                             else
-                                {
+                            {
 
                                 Log.w("TAG", "signInWithEmail:failure", task.getException());
 
@@ -181,12 +202,17 @@ public class FireStoreAPI
                                             }
                                         });
 
+                                enrollStudent();
+                                Bank.openAccount(new Account("OrdinaryAccount"));
+
+
                                 context.startActivity(new Intent(context,LoginActivity.class));
 
-                            } else
-                                {
+                            }
+                            else
+                            {
 
-                                    Toast.makeText(context, "회원가입 실패!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "회원가입 실패!", Toast.LENGTH_SHORT).show();
 
 
                             }
@@ -201,6 +227,13 @@ public class FireStoreAPI
                     .document(student.getStudentCode())
                     .update("Email",email);
 
+        }
+
+        private static void enrollStudent()
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Student/StudentList/")
+                    .document(student.getNumber()+student.getName())
+                    .set(student);
         }
 
     }
@@ -238,12 +271,62 @@ public class FireStoreAPI
     {
         private static List<String> list;
 
+        public static void openAccount(Account account)
+        {
+            switch (account.getAccountType())
+            {
+                case "OrdinaryAccount":
+                    db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/OrdinaryAccount/")
+                            .document(student.getNumber()+student.getName())
+                            .set(account);
+
+                    break;
+
+                default:
+            }
+
+        }
+
+        public static void addAccountLog(Account account, Account.AccountLog log, String number, String name)
+        {
+            switch (account.getAccountType())
+            {
+                case "OrdinaryAccount":
+                    db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+
+                            "/INFO/Banking/OrdinaryAccount/"+number+name+"/Logs")
+                            .document(log.getDateOfTransaction()+log.getTimeOfTransaction())
+                            .set(log);
+                    break;
+                default:
+
+            }
+
+        }
+
+        public static void deposit(Account account, String number, String name)
+        {
+            switch (account.getAccountType())
+            {
+                case "OrdinaryAccount":
+
+                    break;
+                default:
+            }
+
+        }
+
+        public static void withdraw(Account account, String number, String name)
+        {
+
+        }
+
+
         public static void enrollSaving(Context context, Saving saving)
         {
             String document = String.valueOf(saving.getNumber())+saving.getName();
             DocumentReference documentSnapshot=
                     db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Banking/SavingsAccount/")
-                    .document(document);
+                            .document(document);
 
             documentSnapshot
                     .get()
@@ -281,7 +364,14 @@ public class FireStoreAPI
                             {
                                 for (QueryDocumentSnapshot document:task.getResult())
                                 {
-                                    callback.callback(document.toObject(Saving.class));
+                                    try
+                                    {
+                                        callback.callback(document.toObject(Saving.class));
+                                    }
+                                    catch (ParseException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                             else
@@ -341,7 +431,14 @@ public class FireStoreAPI
                         {
                             if (task.isSuccessful())
                             {
-                                callback.callback(Double.valueOf(task.getResult().get("Rate").toString()));
+                                try
+                                {
+                                    callback.callback(Double.valueOf(task.getResult().get("Rate").toString()));
+                                }
+                                catch (ParseException e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                             else
                             {

@@ -33,7 +33,7 @@
         </TextView>
 
         <Spinner
-            android:id="@+id/WorkActivity_Dialog_EnterInfo_spinner_Number"
+            android:id="@+id/WorkActivity_BankTeller_Dialog_EnterInfo_spinner_Number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

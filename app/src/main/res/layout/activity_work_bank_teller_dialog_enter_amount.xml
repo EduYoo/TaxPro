@@ -30,7 +30,7 @@
         </TextView>
 
         <EditText
-            android:id="@+id/WorkActivity_Dialog_EnterAmount_edit_Amount"
+            android:id="@+id/WorkActivity_BankTeller_Dialog_EnterAmount_edit_Amount"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

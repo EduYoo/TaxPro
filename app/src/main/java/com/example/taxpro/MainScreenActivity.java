@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-public class MainScreenActivity extends AppCompatActivity
+public class MainScreenActivity extends AppCompatActivity implements View.OnClickListener
 {
     Context context;
 
@@ -50,8 +50,25 @@ public class MainScreenActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(context, WorkActivity.class));
+                startActivity(new Intent(context, WorkActivity_BankTeller.class));
             }
         });
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+        switch (student.getJob())
+        {
+            case "은행원":
+
+                break;
+            case "투자회사직원":
+
+                break;
+            default:
+
+        }
+
     }
 }
