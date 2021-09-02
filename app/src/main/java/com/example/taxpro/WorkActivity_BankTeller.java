@@ -79,7 +79,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
         savingList=new ArrayList<>();
         savingClosingList=new ArrayList<>();
 
-        FireStoreAPI.Bank.getListOfSavingProduct();
+        FireStoreService.Bank.getListOfSavingProduct();
 
 
     }
@@ -135,7 +135,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
 
     private void seeSavingState()
     {
-        FireStoreAPI.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
+        FireStoreService.Bank.seeSavingState(new FireStoreGetCallback<Saving>()
         {
             @Override
             public void callback(Saving object) throws ParseException
@@ -195,7 +195,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
                         }
                         else
                         {
-                            FireStoreAPI.Bank.getSavingProduct(new FireStoreGetCallback<Double>()
+                            FireStoreService.Bank.getSavingProduct(new FireStoreGetCallback<Double>()
                             {
                                 @Override
                                 public void callback(Double object)
@@ -332,7 +332,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        Toast.makeText(context, "학생 정보 입력 취소", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "입력 취소", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -356,7 +356,7 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
                     {
                         savingList.clear();
                         savingClosingList.clear();
-                        FireStoreAPI.Bank.enrollSaving(context, saving);
+                        FireStoreService.Bank.enrollSaving(context, saving);
                         seeSavingState();
                     }
                 })

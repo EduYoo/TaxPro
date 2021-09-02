@@ -35,7 +35,7 @@ public class SignUpActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                FireStoreAPI.Auth.signUp(context,email_EditText.getText().toString(),password_EditText.getText().toString());
+                FireStoreService.Auth.signUp(context,email_EditText.getText().toString(),password_EditText.getText().toString());
             }
         });
     }

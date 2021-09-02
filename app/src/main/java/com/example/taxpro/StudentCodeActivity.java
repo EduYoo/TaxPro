@@ -24,6 +24,7 @@ public class StudentCodeActivity extends AppCompatActivity
         getIntent();
 
         context=this;
+        Student.getInstance().initializeInfo();
 
         studentCode_EditText=findViewById(R.id.StudentCodeActivity_edit_StudentCode);
         btn=findViewById(R.id.StudentCodeActivity_btn);
@@ -33,7 +34,7 @@ public class StudentCodeActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                FireStoreAPI.Auth.checkStudentCode(context,studentCode_EditText.getText().toString(),null);
+                FireStoreService.Auth.checkStudentCode(context,studentCode_EditText.getText().toString(),null);
             }
         });
     }

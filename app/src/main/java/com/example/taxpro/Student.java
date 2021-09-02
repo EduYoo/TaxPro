@@ -27,7 +27,9 @@ public class Student
         studentCode=null;
         email=null;
         name=null;
+        number=null;
         job=null;
+        creditScore=0;
     }
 
     public String getRegion() { return student.region; }
@@ -39,6 +41,7 @@ public class Student
     public String getName() { return student.name; }
     public String getNumber() { return number; }
     public String getJob() { return student.job; }
+    public int getCreditScore() { return creditScore; }
 
     public void setRegion(String region) { student.region = region; }
     public void setSchool(String school) { student.school = school; }
@@ -50,4 +53,5 @@ public class Student
     public void setName(String name) { student.name = name; }
     public void setNumber(String number) { this.number = number; }
     public void setJob(String job) { student.job = job; }
+    public void setCreditScore(int creditScore) { this.creditScore = creditScore; }
 }

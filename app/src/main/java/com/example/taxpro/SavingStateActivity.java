@@ -24,10 +24,10 @@ public class SavingStateActivity extends AppCompatActivity
 
         savingList=(ArrayList<Saving>) getIntent().getSerializableExtra("savingList");
 
-        CustomAdapter adapter = new CustomAdapter(context,savingList);
+        SavingAdapter adapter = new SavingAdapter(context,savingList);
 
         RecyclerView recyclerView = findViewById(R.id.SavingStateActivity_RecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         recyclerView.setAdapter(adapter);
 

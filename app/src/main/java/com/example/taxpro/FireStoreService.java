@@ -20,16 +20,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class FireStoreAPI
+public class FireStoreService
 {
 
 
@@ -44,39 +41,46 @@ public class FireStoreAPI
 
         public static void checkStudentCode(Context context, String studentCode, String password)
         {
-            String classCode = studentCode.substring(0,6);
-            FireStoreAPI.db.collection("IntegratedManagement")
-                    .document(classCode)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+            if (studentCode.length()<=6)
+            {
+                Toast.makeText(context,"유효하지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                String classCode = studentCode.substring(0,6);
+                db.collection("IntegratedManagement")
+                        .document(classCode)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                         {
-                            DocumentSnapshot document_ClassCode = task.getResult();
-                            if (document_ClassCode.exists())
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task)
                             {
-                                student.setClassCode(classCode);
-                                db.collection("IntegratedManagement/"+classCode+"/StudentList")
-                                        .document(studentCode)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-                                        {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                                DocumentSnapshot document_ClassCode = task.getResult();
+                                if (document_ClassCode.exists())
+                                {
+                                    student.setClassCode(classCode);
+                                    db.collection("IntegratedManagement/"+classCode+"/StudentList")
+                                            .document(studentCode)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                                             {
-                                                DocumentSnapshot document_studentCode = task.getResult();
-                                                if (document_studentCode.exists())
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task)
                                                 {
-                                                    Log.d("???", context.toString());
-                                                    student.setStudentCode(document_studentCode.get("StudentCode").toString());
-                                                    student.setRegion(document_studentCode.get("Region").toString());
-                                                    student.setSchool(document_studentCode.get("School").toString());
-                                                    student.setGrade(document_studentCode.get("Grade").toString());
-                                                    student.setName(document_studentCode.get("Name").toString());
-                                                    student.setNumber(document_studentCode.get("Number").toString());
+                                                    DocumentSnapshot document_studentCode = task.getResult();
+                                                    if (document_studentCode.exists())
+                                                    {
+                                                        Log.d("???", context.toString());
+                                                        student.setStudentCode(document_studentCode.get("StudentCode").toString());
+                                                        student.setRegion(document_studentCode.get("Region").toString());
+                                                        student.setSchool(document_studentCode.get("School").toString());
+                                                        student.setGrade(document_studentCode.get("Grade").toString());
+                                                        student.setName(document_studentCode.get("Name").toString());
+                                                        student.setNumber(document_studentCode.get("Number").toString());
+                                                        student.setCreditScore(400);
 
-                                                    checkEmail(context, classCode, studentCode, password);
+                                                        checkEmail(context, classCode, studentCode, password);
 
                                                             /*
                                                             if(context instanceof LoginActivity)
@@ -89,21 +93,24 @@ public class FireStoreAPI
                                                             }*/
 
 
-                                                }
-                                                else
-                                                {
-                                                    Toast.makeText(context,"올바르지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
-                                                }
+                                                    }
+                                                    else
+                                                    {
+                                                        Toast.makeText(context,"올바르지 않은 학생코드입니다. 정확한 학생코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                                                    }
 
-                                            }
-                                        });
+                                                }
+                                            });
+                                }
+                                else
+                                {
+                                    Toast.makeText(context,"올바르지 않은 학급코드입니다. 정확한 학급코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else
-                            {
-                                Toast.makeText(context,"올바르지 않은 학급코드입니다. 정확한 학급코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                        });
+
+            }
+
 
         }
 
@@ -121,6 +128,7 @@ public class FireStoreAPI
                             {
                                 if (task.getResult().get("Email") != "")
                                 {
+                                    getJobInfo();
                                     signIn(context,task.getResult().get("Email").toString(),password);
                                 }
                                 else
@@ -230,7 +238,7 @@ public class FireStoreAPI
 
         private static void registerEmail(String email)
         {
-            FireStoreAPI.db.collection("IntegratedManagement/"+student.getClassCode()+"/StudentList")
+            FireStoreService.db.collection("IntegratedManagement/"+student.getClassCode()+"/StudentList")
                     .document(student.getStudentCode())
                     .update("Email",email);
 
@@ -241,6 +249,26 @@ public class FireStoreAPI
             db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Student/StudentList/")
                     .document(student.getNumber()+student.getName())
                     .set(student);
+        }
+
+        private static void getJobInfo()
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Student/StudentList/")
+                    .document(student.getNumber()+student.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            student.setJob(task.getResult().get("job").toString());
+                            else
+                            {
+
+                            }
+                        }
+                    });
         }
 
     }
@@ -463,7 +491,7 @@ public class FireStoreAPI
                             {
                                 try
                                 {
-                                    callback.callback(Double.valueOf(task.getResult().get("Rate").toString()));
+                                    callback.callback(Double.valueOf(task.getResult().get("rate").toString()));
                                 }
                                 catch (ParseException e)
                                 {

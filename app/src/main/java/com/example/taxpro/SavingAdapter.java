@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>
+public class SavingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
-    private ArrayList<?> list;
+    private ArrayList<Saving> list;
     private Context context;
 
-    public CustomAdapter(Context context, ArrayList<Saving> list)
+    public SavingAdapter(Context context, ArrayList<Saving> list)
     {
         this.context=context;
         this.list = list;
@@ -26,7 +27,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
         View view;
 
@@ -34,72 +35,68 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.activity_saving_state_row_item,parent,false);
+
+            return new SavingViewHolder(view, context);
         }
         else if (context instanceof SavingClosingActivity)
         {
+            Log.d("???!_onCreateViewHolder", list.toString());
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.activity_saving_closing_row_item,parent,false);
 
+            return new SavingViewHolder(view, context);
         }
         else
         {
             Log.d("???", "error on \"onCreateViewHolder\" in SavingAdapter");
             view=null;
+
+            return new SavingViewHolder(view, context);
         }
 
-        return new ViewHolder(view, context);
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
     {
 
-        final ViewHolder viewHolder=holder;
+        final SavingViewHolder viewHolder=(SavingViewHolder)holder;
 
         viewHolder.itemView.getLayoutParams().height=100;
         viewHolder.itemView.requestLayout();
 
         if (context instanceof SavingStateActivity )
         {
-            ArrayList<Saving> list_=(ArrayList<Saving>) list;
-
-            viewHolder.getNumber_Text().setText(list_.get(position).getNumber());
-            viewHolder.getName_Text().setText(list_.get(position).getName());
-            viewHolder.getSaving_Text().setText(list_.get(position).getType());
-            viewHolder.getdDay_Text().setText(list_.get(position).getdDay());
-            viewHolder.getDueDate_Text().setText(list_.get(position).getDueDate());
+            viewHolder.getNumber_Text().setText(list.get(position).getNumber());
+            viewHolder.getName_Text().setText(list.get(position).getName());
+            viewHolder.getSaving_Text().setText(list.get(position).getType());
+            viewHolder.getdDay_Text().setText(list.get(position).getdDay());
+            viewHolder.getDueDate_Text().setText(list.get(position).getDueDate());
 
         }
         else if (context instanceof SavingClosingActivity)
         {
-            ArrayList<Saving> list_=(ArrayList<Saving>) list;
-
-            viewHolder.getNumber_Text().setText(list_.get(position).getNumber());
-            viewHolder.getName_Text().setText(list_.get(position).getName());
-            viewHolder.getSaving_Text().setText(list_.get(position).getType());
-            viewHolder.getdDay_Text().setText(list_.get(position).getdDay());
-            viewHolder.getDueDate_Text().setText(list_.get(position).getDueDate());
-
-            viewHolder.getClosing_Btn().setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    FireStoreAPI.Bank.closeSaving(list_.get(viewHolder.getAdapterPosition()).getNumber(), list_.get(viewHolder.getAdapterPosition()).getName());
-                }
-            });
+            viewHolder.getNumber_Text().setText(list.get(position).getNumber());
+            viewHolder.getName_Text().setText(list.get(position).getName());
+            viewHolder.getSaving_Text().setText(list.get(position).getType());
+            viewHolder.getdDay_Text().setText(list.get(position).getdDay());
+            viewHolder.getDueDate_Text().setText(list.get(position).getDueDate());
 
         }
     }
 
+
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
+        Log.d("???!_getItemCount", String.valueOf(list.size()));
         return list.size();
     }
 
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder
+    public class SavingViewHolder extends RecyclerView.ViewHolder
     {
         private TextView number_Text;
         private TextView name_Text;
@@ -108,7 +105,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         private TextView dueDate_Text;
         private Button closing_Btn;
 
-        public ViewHolder(@NonNull View itemView, Context context)
+        public SavingViewHolder(@NonNull View itemView, Context context)
         {
             super(itemView);
             if (context instanceof SavingStateActivity)
@@ -121,12 +118,25 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             }
             else if (context instanceof SavingClosingActivity )
             {
+                Log.d("???!_SavingViewHolder생성자", "");
                 number_Text=(TextView) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_Number);
                 name_Text=(TextView) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_Name);
                 saving_Text=(TextView) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_SavingType);
                 dDay_Text=(TextView) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_Dday);
                 dueDate_Text=(TextView) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_DueDate);
                 closing_Btn= (Button) itemView.findViewById(R.id.SavingClosingActivity_Row_Item_btn_Closing);
+
+                closing_Btn.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        FireStoreService.Bank.closeSaving(list.get(getAdapterPosition()).getNumber(), list.get(getAdapterPosition()).getName());
+                        list.remove(getAdapterPosition());
+                        notifyItemRemoved(getAdapterPosition());
+
+                    }
+                });
             }
 
         }
@@ -136,6 +146,5 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public TextView getSaving_Text() { return saving_Text; }
         public TextView getdDay_Text() { return dDay_Text; }
         public TextView getDueDate_Text() { return dueDate_Text; }
-        public Button getClosing_Btn() { return closing_Btn; }
     }
 }

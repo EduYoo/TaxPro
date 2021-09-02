@@ -3,12 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_credit_rating_staff_row_item.xml" value="0.1" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_loading.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_login.xml" value="0.2390625" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_main_screen.xml" value="0.2390625" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_closing.xml" value="0.1" />
-        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_closing_row_item.xml" value="0.1296875" />
-        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_state.xml" value="0.152" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_closing_row_item.xml" value="0.1" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_state.xml" value="0.1" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_saving_state_row_item.xml" value="0.1" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_student_code.xml" value="0.25364583333333335" />
@@ -17,6 +18,8 @@
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_bank_teller_dialog_enter_amount.xml" value="0.23596014492753623" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_bank_teller_dialog_enter_number.xml" value="0.23596014492753623" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_bank_teller_dialog_select_saving.xml" value="0.23596014492753623" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_credit_rating_staff.xml" value="0.1" />
+        <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_credit_rating_staff_dialog_score.xml" value="0.24728260869565216" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_dialog_enter_amount.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_dialog_enter_info.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/YOO/AndroidStudioProjects/TaxPro/app/src/main/res/layout/activity_work_dialog_select_saving.xml" value="0.25364583333333335" />
