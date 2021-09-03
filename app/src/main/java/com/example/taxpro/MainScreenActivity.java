@@ -10,8 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.taxpro.firebasefirestore.FireStoreService;
+import com.example.taxpro.info.ClassInfo;
+import com.example.taxpro.info.Student;
+import com.example.taxpro.work.WorkActivity_BankTeller;
+import com.example.taxpro.work.WorkActivity_CreditRatingStaff;
+import com.example.taxpro.work.WorkActivity_InvestmentCompanyStaff;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity implements View.OnClickListener
 {

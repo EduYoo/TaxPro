@@ -1,4 +1,4 @@
-package com.example.taxpro;
+package com.example.taxpro.work;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +10,11 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import com.example.taxpro.R;
+import com.example.taxpro.firebasefirestore.FireStoreService;
 
 import java.util.ArrayList;
 

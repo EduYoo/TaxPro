@@ -1,4 +1,4 @@
-package com.example.taxpro;
+package com.example.taxpro.firebasefirestore;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.taxpro.goods.InvestmentGoods;
+import com.example.taxpro.info.ClassInfo;
+import com.example.taxpro.LoginActivity;
+import com.example.taxpro.MainScreenActivity;
+import com.example.taxpro.SignUpActivity;
+import com.example.taxpro.info.Student;
+import com.example.taxpro.StudentCodeActivity;
+import com.example.taxpro.account.Account;
+import com.example.taxpro.account.AccountLog;
+import com.example.taxpro.account.Saving;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -141,7 +151,7 @@ public class FireStoreService
                             {
                                 if (task.getResult().get("Email") == "")
                                 {
-                                    context.startActivity(new Intent(context,SignUpActivity.class));
+                                    context.startActivity(new Intent(context, SignUpActivity.class));
                                 }
                                 else
                                 {
@@ -172,7 +182,7 @@ public class FireStoreService
                                 if (user.isEmailVerified())
                                 {
                                     student.setEmail(user.getEmail());
-                                    context.startActivity(new Intent(context,MainScreenActivity.class));
+                                    context.startActivity(new Intent(context, MainScreenActivity.class));
                                 }
                                 else
                                 {
@@ -217,7 +227,7 @@ public class FireStoreService
                                         });
 
                                 enrollStudent();
-                                Bank.openAccount(new Account("OrdinaryAccount"), new AccountLog(false,0, LocalDate.now().toString(), LocalTime.now().toString()),student.getNumber(),student.getName());
+                                Bank.openAccount(new Account("OrdinaryAccount"), new AccountLog(false,0),student.getNumber(),student.getName());
 
 
 
@@ -399,7 +409,7 @@ public class FireStoreService
                             else
                             {
                                 documentSnapshot.set(saving);
-                                addAccountLog(saving,new AccountLog(true,0,LocalDate.now().toString(),LocalTime.now().toString()),saving.getNumber(),saving.getName());
+                                addAccountLog(saving,new AccountLog(true,0),saving.getNumber(),saving.getName());
                             }
 
                         }
@@ -511,6 +521,65 @@ public class FireStoreService
 
     public static class Investment
     {
+        public static void getOpeningAndClosingTime(FireStoreGetCallback<List<String>> callback)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/")
+                    .document("Investment")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                try
+                                {
+                                    callback.callback((ArrayList<String>) task.getResult().get("Time"));
+                                }
+                                catch (ParseException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+
+
+                        }
+                    });
+        }
+
+
+        public static void getInvestmentGoods(FireStoreGetCallback<InvestmentGoods> callback)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Investment/InvestmentGoods/")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                for (QueryDocumentSnapshot document:task.getResult())
+                                {
+                                    try
+                                    {
+                                        callback.callback(document.toObject(InvestmentGoods.class));
+                                    }
+                                    catch (ParseException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    });
+
+        }
 
     }
 

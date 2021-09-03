@@ -1,4 +1,7 @@
-package com.example.taxpro;
+package com.example.taxpro.account;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class AccountLog
 {
@@ -7,16 +10,14 @@ public class AccountLog
     private String dateOfTransaction;
     private String timeOfTransaction;
 
-    public AccountLog(boolean depositOrNot, double amount,String dateOfTransaction, String timeOfTransaction)
+    public AccountLog(boolean depositOrNot, double amount)
     {
         this.depositOrNot = depositOrNot;
         this.amount = amount;
-        this.dateOfTransaction = dateOfTransaction;
-        this.timeOfTransaction = timeOfTransaction;
+        this.dateOfTransaction = LocalDate.now().toString();
+        this.timeOfTransaction =  LocalTime.now().toString();
     }
 
-    public boolean isDepositOrNot() { return depositOrNot; }
-    public double getAmount() { return amount; }
     public String getDateOfTransaction() { return dateOfTransaction; }
     public String getTimeOfTransaction() { return timeOfTransaction; }
 }

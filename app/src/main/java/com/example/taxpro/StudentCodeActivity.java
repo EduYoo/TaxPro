@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.taxpro.firebasefirestore.FireStoreService;
+import com.example.taxpro.info.Student;
+
 public class StudentCodeActivity extends AppCompatActivity
 {
     private Context context;

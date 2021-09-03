@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaxPro">
         <activity
-            android:name=".WorkActivity_CreditRatingStaff"
+            android:name=".work.WorkActivity_CreditRatingStaff"
             android:exported="true" />
         <activity
-            android:name=".WorkActivity_InvestmentCompanyStaff"
+            android:name=".work.WorkActivity_InvestmentCompanyStaff"
             android:exported="true" />
         <activity
-            android:name=".SavingClosingActivity"
+            android:name=".work.SavingClosingActivity"
             android:exported="true" />
         <activity
-            android:name=".SavingStateActivity"
+            android:name=".work.SavingStateActivity"
             android:exported="true" />
         <activity
-            android:name=".WorkActivity_BankTeller"
+            android:name=".work.WorkActivity_BankTeller"
             android:exported="true" />
         <activity
             android:name=".SignUpActivity"

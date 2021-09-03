@@ -1,4 +1,4 @@
-package com.example.taxpro;
+package com.example.taxpro.work;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,8 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.taxpro.R;
+import com.example.taxpro.account.Saving;
+import com.example.taxpro.firebasefirestore.FireStoreService;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class SavingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {

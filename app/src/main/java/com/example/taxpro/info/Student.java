@@ -1,4 +1,4 @@
-package com.example.taxpro;
+package com.example.taxpro.info;
 
 public class Student
 {

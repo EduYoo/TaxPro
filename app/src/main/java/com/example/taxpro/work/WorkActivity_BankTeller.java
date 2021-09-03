@@ -1,4 +1,4 @@
-package com.example.taxpro;
+package com.example.taxpro.work;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.taxpro.info.ClassInfo;
+import com.example.taxpro.R;
+import com.example.taxpro.info.Student;
+import com.example.taxpro.account.Saving;
+import com.example.taxpro.firebasefirestore.FireStoreGetCallback;
+import com.example.taxpro.firebasefirestore.FireStoreService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,8 +86,8 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
         savingList=new ArrayList<>();
         savingClosingList=new ArrayList<>();
 
-        FireStoreService.Bank.getListOfSavingProduct();
 
+            FireStoreService.Bank.getListOfSavingProduct();
 
     }
 

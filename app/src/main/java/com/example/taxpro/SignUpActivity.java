@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.taxpro.firebasefirestore.FireStoreService;
+
 public class SignUpActivity extends AppCompatActivity
 {
     private Context context;
