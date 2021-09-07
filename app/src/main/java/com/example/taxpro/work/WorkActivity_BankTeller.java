@@ -36,7 +36,6 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
     private Context context;
 
     private ClassInfo classInfo;
-    private Student student;
     private Saving saving;
 
     private Button savingRegistration_Btn;
@@ -51,7 +50,6 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
 
 
     private Integer[] numberArray;
-    private HashMap<Integer, String> map;
 
     private ArrayList<Saving> savingList;
     private ArrayList<Saving> savingClosingList;
@@ -72,7 +70,6 @@ public class WorkActivity_BankTeller extends AppCompatActivity implements View.O
         context=this;
 
         classInfo=ClassInfo.getInstance();
-        student=Student.getInstance();
         calendar=Calendar.getInstance();
 
         savingRegistration_Btn=findViewById(R.id.WorkActivity_BankTeller_btn_SavingRegistration);

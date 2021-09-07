@@ -4,7 +4,8 @@ import java.time.LocalDate;
 
 public class InvestmentGoods extends Goods
 {
-    String history;
+    private String history;
+    private int buyingQuantity;
 
     public InvestmentGoods()
     {
@@ -17,13 +18,17 @@ public class InvestmentGoods extends Goods
         this.history = LocalDate.now().toString();
     }
 
+    public void setBuyingQuantity(int buyingQuantity) { this.buyingQuantity = buyingQuantity; }
+
+    public int getBuyingQuantity() { return buyingQuantity; }
+
     @Override
     public String toString()
     {
         return "InvestmentGoods{" +
                 "name='" + getName() +
                 ", price=" + getPrice() +
-                ", quantity=" + getQuantity() +
+                ", quantity=" + getInventory() +
                 " history='" + history +
                 '}';
     }

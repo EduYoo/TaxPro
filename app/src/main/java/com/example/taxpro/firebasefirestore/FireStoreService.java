@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.taxpro.goods.Goods;
+import com.example.taxpro.goods.GoodsLog;
 import com.example.taxpro.goods.InvestmentGoods;
 import com.example.taxpro.info.ClassInfo;
 import com.example.taxpro.LoginActivity;
@@ -88,6 +90,7 @@ public class FireStoreService
                                                         student.setGrade(document_studentCode.get("Grade").toString());
                                                         student.setName(document_studentCode.get("Name").toString());
                                                         student.setNumber(document_studentCode.get("Number").toString());
+                                                        student.setJob("무직");
                                                         student.setCreditScore(400);
 
                                                         checkEmail(context, classCode, studentCode, password);
@@ -136,10 +139,14 @@ public class FireStoreService
                         {
                             if (context instanceof LoginActivity)
                             {
-                                if (task.getResult().get("Email") != "")
+                                if (task.getResult().get("Email") != "" && password.length()>=6)
                                 {
                                     getJobInfo();
                                     signIn(context,task.getResult().get("Email").toString(),password);
+                                }
+                                else if(password.length()<=6)
+                                {
+                                    Toast.makeText(context,"비밀번호를 입력하세요!",Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -579,6 +586,13 @@ public class FireStoreService
                         }
                     });
 
+        }
+
+        public static void buyInvestmentGoods(String investmentGoods, GoodsLog log)
+        {
+            db.collection(student.getRegion()+"/"+student.getSchool()+"/"+student.getGrade()+"/"+student.getClassCode()+"/INFO/Investment/InvestmentGoods/"+investmentGoods+"/Logs/")
+                    .document(log.getBuyer_number()+log.getBuyer_name()+"_"+log.getDateOfTransaction()+"_"+log.getTimeOfTransaction())
+                    .set(log);
         }
 
     }
